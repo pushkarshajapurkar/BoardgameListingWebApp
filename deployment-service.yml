@@ -1,0 +1,42 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: board-deployment
+  namespace: boards
+  labels:
+    app: board
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: board
+  template:
+    metadata:
+      namespace: boards
+      labels:
+        app: board
+    spec:
+      containers:
+        - name: board-app-cntr
+          image: pushkar4399/boardgamewebapp:latest
+          ports:
+          - containerPort: 8080
+          imagePullPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: board-service
+  namespace: boards
+
+spec:
+  type: NodePort
+  selector:
+    app: board
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30001
